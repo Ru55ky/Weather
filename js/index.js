@@ -9,9 +9,12 @@ today = document.querySelector('.today'),
 nextDay = document.querySelector('.nextDay')
 
 
+const containerError = document.createElement('div')
+containerError.classList.add('containerErr')
+containerError.innerHTML = `
+<span>Что-то пошло не так</span>
+`
 
-/*
-nextDay.addEventListener('click', weatherNextDay) */
 
 preloaderImg.style.backgroundImage = `url(${randomPreloader()})`
 
@@ -21,7 +24,7 @@ const connect = async function (url) {
     })
     return await res.json()
 }
-
+// карточка погоды на сегодня
  function weatherTodayFunction (response) {
     const {city} = response
 
@@ -69,7 +72,7 @@ const connect = async function (url) {
 }
 
 getResource()
-
+//ввод в поисковой инпут через кнопку и enter
 const btnSearch = document.querySelector('.btn-submit')
 const inputSearch = document.querySelector('.inputSearch')
 btnSearch.addEventListener('click', (e) => {
@@ -86,14 +89,14 @@ inputSearch.addEventListener('keydown', (e) => {
         searchCity(value)
     }
 })
-
+//поиск города через Api
 function searchCity (city) {
     document.body.append(preloader)
     connect(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${_ApiKey}`)
     .then(data => {
         container.innerHTML = ''
         weatherTodayFunction(data)
-        
+
         nextDay.addEventListener('click', () => {
             container.innerHTML = ''
             getWeatherNextDayFunction(data)
@@ -104,18 +107,22 @@ function searchCity (city) {
         })
         inputSearch.value = ''
     })
+    .catch((err) => {
+        console.error(err)
+        document.body.append(containerError) 
+    })
     .finally(() => {
         preloader.remove()
     })
 }
 
-
+//выдает рандомный прелоадер
 function randomPreloader () {
     const item = Math.floor(Math.random() * preloaderWeather.length)
     return preloaderWeather[item]
 }
 console.log(randomPreloader())
-
+//функция выдачи дефолтного города(тест)
 function getResource () {
     document.body.append(preloader)
     connect(`https://api.openweathermap.org/data/2.5/forecast?id=524901&appid=${_ApiKey}`)
@@ -128,7 +135,7 @@ function getResource () {
         preloader.remove()
     })
 }
-
+//функция прогноза погоды на завтра(если в инпуте был задан город)
 function getWeatherNextDayFunction (response) {
     const {city} = response
     const newArr = response.list
@@ -174,35 +181,21 @@ function getWeatherNextDayFunction (response) {
 }
 
 /*темная тема */
-let changeThemeButtons = document.querySelectorAll('.changeTheme'); // Помещаем кнопки смены темы в переменную
+let changeThemeButtons = document.querySelectorAll('.changeTheme');
 
 changeThemeButtons.forEach(button => {
-    button.addEventListener('click', function () { // К каждой добавляем обработчик событий на клик
-        let theme = this.dataset.theme; // Помещаем в переменную название темы из атрибута data-theme
-        applyTheme(theme); // Вызываем функцию, которая меняет тему и передаем в нее её название
+    button.addEventListener('click', function () { 
+        let theme = this.dataset.theme; 
+        applyTheme(theme); 
     });
 });
 
 function applyTheme(themeName) {
-    document.querySelector('[title="theme"]').setAttribute('href', `css/theme-${themeName}.css`); // Помещаем путь к файлу темы в пустой link в head
+    document.querySelector('[title="theme"]').setAttribute('href', `css/theme-${themeName}.css`); 
     changeThemeButtons.forEach(button => {
         button.style.display = 'block'; // Показываем все кнопки смены темы
     });
-    document.querySelector(`[data-theme="${themeName}"]`).style.display = 'none'; // Но скрываем кнопку для активной темы
+    document.querySelector(`[data-theme="${themeName}"]`).style.display = 'none'; 
 }
 
-/*
-function weatherNextDay () {
-    
-    
-    connect(`https://api.openweathermap.org/data/2.5/forecast?id=524901&appid=${_ApiKey}`)
-.then(data => {
-    container.innerHTML = ''
-    document.body.append(preloader)
-    getWeatherNextDayFunction(data)
-})
-.finally (() => {
-    preloader.remove()
-})
-}
-*/
+
