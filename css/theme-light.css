@@ -3,6 +3,7 @@
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-around;
+
 }
 .container-weather{
     width: 350px;
@@ -10,13 +11,20 @@
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
-    box-shadow: 0 0 5px #3333;
+    box-shadow: 0 0 51px #3333;
     list-style-type: none;
-    border: 1px slategrey black;
-    background: linear-gradient(#403A3E, #BE5869);
+    border: 1px slategrey;
+    background: linear-gradient(#bdc3c7, #2c3e50);
     border-radius: 5px;
-    margin-top: 5%;
     color: azure;
+    opacity: 0;
+    margin-top: 1%;
+}
+
+.container-weather-active{
+    margin-top: 7%;
+    opacity: 0.7;
+    transition: opacity, margin-top, 700ms ease-in-out;
 }
 .item-weather {
     margin: 8px;
@@ -28,7 +36,12 @@ body {
     font-weight: 100;
     color: rgb(241, 241, 233);
     margin: 0;
-    padding: auto;
+    background-image: url("background.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
 }
 .container-header{
     color: #355C7D;
@@ -63,14 +76,14 @@ body {
     transition: width 0.3s ease-in;
 }
 .item-container__header:hover:after,
-.item-container__heade:focus::after {
+.item-container__header:focus::after {
     width: 100%;
 }
 
 .loupe {
     max-width: 15%;
     max-height: 15%;
-    
+
 }
 .container-preloader{
     position: fixed;
@@ -78,15 +91,13 @@ body {
     right: 0;
     top: 0;
     bottom: 0;
-    background: #242222;
-    z-index: 1001;
     background-color: rgba(44, 41, 41, 0.2);
+    z-index: 1001;
 }
 
 .preloader-active {
     display: inline-block;
     margin: 0 auto;
-    padding: auto;
     background-image: url('storm.gif');
     width: 100%;
     height: 100%;
@@ -135,6 +146,19 @@ body {
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(39,38,40,0.4);
 }
+.geolocation-blue {
+    position: fixed;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    top: 20%;
+    left: 10px;
+    transform: translateY(-50%);
+    padding: 5px;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(39,38,40,0.4);
+}
 @keyframes anima {
     0% {transform: translateY(125px);}
     50% {transform: translateY(-45px);}
@@ -151,4 +175,76 @@ body {
     position: relative;
     animation: anima ease-in-out 1s;
     box-shadow: 0 0 5px #FF4B2B;
+}
+.preview {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    background: #355C7D;
+    z-index: 1001;
+    margin: 0 auto;
+}
+.preview h1 {
+    opacity: 100%;
+    font-size: 88px;
+    font-family: 'Dancing Script', cursive;
+    text-align: center;
+    line-height: 60vh;
+}
+.btn-preview {
+    display: block;
+    position: relative;
+    width: 135px;
+    height: 40px;
+    margin: 0 auto;
+    background: #EF4E5D;
+    border: none;
+    box-shadow: 0 0 25px rgb(255, 89, 139);
+    border-radius: 5px;
+    color: #bdc3c7;
+}
+.btn-preview:hover{
+    background: #fa5061;
+    box-shadow: 0 0 40px rgb(255, 89, 139);
+    color: #ffffff;
+
+}
+.popup-animation{
+    animation-name: popupAnimation;
+    animation-fill-mode: forwards;
+    animation-timing-function: ease;
+    animation-delay: 1s;
+    animation-duration: 1.5s;
+
+}
+.preview-disable{
+    animation-name: btn-animation;
+    animation-fill-mode: forwards;
+    animation-timing-function: ease;
+    animation-duration: 2s;
+}
+
+@keyframes popupAnimation {
+    0% {opacity: 0.8}
+
+    90%{
+        height: 0;
+        opacity: 0;
+    }
+    100%{display: none}
+}
+
+@keyframes btn-animation {
+    0%{
+        opacity: 0.6;
+    }
+    50%{
+        transform: translateY(250px);
+        opacity: 0.4;
+    }
+    90% {
+        opacity: 0;
+    }
+    100%{display: none}
 }

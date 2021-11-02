@@ -10,6 +10,20 @@
     background: #222222;
     box-shadow: 0 0 10px rgba(255,255,255,0.1);
 }
+.geolocation-blue {
+    position: fixed;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    top: 20%;
+    left: 10px;
+    transform: translateY(-50%);
+    padding: 5px;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(39,38,40,0.4);
+}
+
 .container {
     display: flex;
     flex-direction: row;
@@ -24,23 +38,34 @@
     flex-wrap: nowrap;
     box-shadow: 0 0 5px #3333;
     list-style-type: none;
-    border: 1px slategrey black;
-    background: linear-gradient(#355C7D, #6C5B7B, #C06C84);
+    border: 1px slategrey;
+    background: linear-gradient(#E8CBC0, #636FA4);
     border-radius: 5px;
-    margin-top: 5%;
     color: aliceblue;
+    opacity: 0;
+    margin-top: 1%;
 }
+
+.container-weather-active{
+    margin-top: 7%;
+    opacity: 0.7;
+    transition: opacity, margin-top, 700ms ease-in-out;
+}
+
 .item-weather {
     margin: 8px;
     border-bottom: 1px solid #3333;
 }
 body {
-    background: #222222;
     font-family: 'Yaldevi', sans-serif;
     font-size: 20px;
     font-weight: 100;
-    margin: 0;
-    padding: auto;
+    margin: 0 auto;
+    background-image: url("mountain-range-peak-ice-cliff-scenery-landscape-5k-i9-3840x2400.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 100%;
 }
 
 .container-header{
@@ -83,7 +108,7 @@ body {
 .loupe {
     max-width: 15%;
     max-height: 15%;
-    
+
 }
 .container-preloader{
     position: fixed;
@@ -91,7 +116,6 @@ body {
     right: 0;
     top: 0;
     bottom: 0;
-    background: #242222;
     z-index: 1001;
     background-color: rgba(44, 41, 41, 0.2);
 }
@@ -99,7 +123,6 @@ body {
 .preloader-active {
     display: inline-block;
     margin: 0 auto;
-    padding: auto;
     background-image: url('storm.gif');
     width: 100%;
     height: 100%;

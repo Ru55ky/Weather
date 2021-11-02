@@ -6,7 +6,8 @@ preloaderWeather = ['css/storm.gif', 'css/sunny.gif', 'css/snowflake.gif'],
 preloader = document.querySelector('.container-preloader'),
 preloaderImg = document.querySelector('.preloader-active'),
 today = document.querySelector('.today'),
-nextDay = document.querySelector('.nextDay')
+nextDay = document.querySelector('.nextDay'),
+btnGeolocation = document.querySelector('.geolocation-blue')
 
 
 const containerError = document.createElement('div')
@@ -14,7 +15,6 @@ containerError.classList.add('containerErr')
 containerError.innerHTML = `
 <span>Что-то пошло не так</span>
 `
-
 
 preloaderImg.style.backgroundImage = `url(${randomPreloader()})`
 
@@ -31,13 +31,13 @@ const connect = async function (url) {
     const newArr = response.list
     const weatherToday = newArr.slice(0, 4)
     weatherToday.forEach((element) => {
-        
+
     const item = document.createElement('ul')
     item.classList.add('container-weather')
     item.innerHTML = `
     <li class="item-weather">${city.name}</li>
     <li class="item-weather">${element.dt_txt}
-    <img src="http://openweathermap.org/img/wn/${element.weather[0]['icon']}@2x.png" 
+    <img src="https://openweathermap.org/img/wn/${element.weather[0]['icon']}@2x.png" 
     alt="${element.weather[0]['description']}">
     </li>
     <li class="item-weather">
@@ -68,10 +68,12 @@ const connect = async function (url) {
     `
 
     container.append(item)
-    })    
+
+        setTimeout(() => item.classList.add('container-weather-active'),0)
+    })
 }
 
-getResource()
+ getResource()
 //ввод в поисковой инпут через кнопку и enter
 const btnSearch = document.querySelector('.btn-submit')
 const inputSearch = document.querySelector('.inputSearch')
@@ -109,7 +111,7 @@ function searchCity (city) {
     })
     .catch((err) => {
         console.error(err)
-        document.body.append(containerError) 
+        document.body.append(containerError)
     })
     .finally(() => {
         preloader.remove()
@@ -130,6 +132,7 @@ function getResource () {
         container.innerHTML = ''
         weatherTodayFunction(data)
         document.body.append(preloader)
+        console.log(data)
     })
     .finally(() => {
         preloader.remove()
@@ -142,7 +145,7 @@ function getWeatherNextDayFunction (response) {
 
     const nextDay = newArr.slice(4, 12)
     nextDay.forEach((element) => {
-        
+
         const item = document.createElement('ul')
         item.classList.add('container-weather')
         item.innerHTML = `
@@ -177,25 +180,53 @@ function getWeatherNextDayFunction (response) {
                 <li class="item-weather">Давление: ${element.main.pressure} мм рт. ст.</li>
         `
         container.append(item)
-        })  
+        setTimeout(() => item.classList.add('container-weather-active'),0)
+        })
 }
 
 /*темная тема */
 let changeThemeButtons = document.querySelectorAll('.changeTheme');
 
 changeThemeButtons.forEach(button => {
-    button.addEventListener('click', function () { 
-        let theme = this.dataset.theme; 
-        applyTheme(theme); 
+    button.addEventListener('click', function () {
+        let theme = this.dataset.theme;
+        applyTheme(theme);
     });
 });
 
 function applyTheme(themeName) {
-    document.querySelector('[title="theme"]').setAttribute('href', `css/theme-${themeName}.css`); 
+    document.querySelector('[title="theme"]').setAttribute('href', `css/theme-${themeName}.css`);
     changeThemeButtons.forEach(button => {
         button.style.display = 'block'; // Показываем все кнопки смены темы
     });
-    document.querySelector(`[data-theme="${themeName}"]`).style.display = 'none'; 
+    document.querySelector(`[data-theme="${themeName}"]`).style.display = 'none';
+
 }
+const testingBtn = document.querySelector('.btn-preview'),
+    previewMenu = document.querySelector('.preview')
+testingBtn.addEventListener('click', () => {
+    testingBtn.classList.add('preview-disable')
+    previewMenu.classList.add('popup-animation')
+    setTimeout(() => {
+        previewMenu.style.display = 'none'
+        document.body.style.overflow = 'auto'
+    }, 1700)
 
+})
+function geo () {
+    const success = (position) => {
+        const {latitude, longitude} = position.coords
+        geolocation(latitude, longitude)
+        console.log(latitude, longitude)
+    }
+    navigator.geolocation.getCurrentPosition(success)
 
+}
+function geolocation (lat, lon) {
+    connect(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${_ApiKey}`)
+        .then(data => {
+            container.innerHTML = ''
+            weatherTodayFunction(data)
+        })
+}
+btnGeolocation.addEventListener('click', geo)
