@@ -7,7 +7,8 @@ preloader = document.querySelector('.container-preloader'),
 preloaderImg = document.querySelector('.preloader-active'),
 today = document.querySelector('.today'),
 nextDay = document.querySelector('.nextDay'),
-btnGeolocation = document.querySelector('.geolocation-blue')
+btnGeolocation = document.querySelector('.geolocation-blue'),
+monthArr = ['Января', 'Феварля', "Марта", "Апреля", "Мая", "Июня", "Июля", "Августа", "Сентября", "Октября", "Ноября", "Декабря"]
 
 
 const containerError = document.createElement('div')
@@ -30,13 +31,17 @@ const connect = async function (url) {
 
     const newArr = response.list
     const weatherToday = newArr.slice(0, 4)
+
     weatherToday.forEach((element) => {
+        const currentMonth = new Date().getMonth()
+        monthArr.forEach((month, id) => {
+            if(id === currentMonth) {
 
     const item = document.createElement('ul')
     item.classList.add('container-weather')
     item.innerHTML = `
-    <li class="item-weather">${city.name}</li>
-    <li class="item-weather">${element.dt_txt}
+    <li class="item-weather main-info">${city.name}</li>
+    <li class="item-weather main-info">${new Date().getDate()} ${month}
     <img src="https://openweathermap.org/img/wn/${element.weather[0]['icon']}@2x.png" 
     alt="${element.weather[0]['description']}">
     </li>
@@ -70,11 +75,14 @@ const connect = async function (url) {
     container.append(item)
 
         setTimeout(() => item.classList.add('container-weather-active'),0)
+            }
+        })
     })
 }
 
  getResource()
-//ввод в поисковой инпут через кнопку и enter
+
+//ввод в поисковой инпут через ЛКМ и enter
 const btnSearch = document.querySelector('.btn-submit')
 const inputSearch = document.querySelector('.inputSearch')
 btnSearch.addEventListener('click', (e) => {
@@ -91,10 +99,11 @@ inputSearch.addEventListener('keydown', (e) => {
         searchCity(value)
     }
 })
+
 //поиск города через Api
 function searchCity (city) {
     document.body.append(preloader)
-    connect(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${_ApiKey}`)
+    connect(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&lang=ru&appid=${_ApiKey}`)
     .then(data => {
         container.innerHTML = ''
         weatherTodayFunction(data)
@@ -127,7 +136,7 @@ console.log(randomPreloader())
 //функция выдачи дефолтного города(тест)
 function getResource () {
     document.body.append(preloader)
-    connect(`https://api.openweathermap.org/data/2.5/forecast?id=524901&appid=${_ApiKey}`)
+    connect(`https://api.openweathermap.org/data/2.5/forecast?id=524901&lang=ru&appid=${_ApiKey}`)
     .then(data => {
         container.innerHTML = ''
         weatherTodayFunction(data)
@@ -145,12 +154,15 @@ function getWeatherNextDayFunction (response) {
 
     const nextDay = newArr.slice(4, 12)
     nextDay.forEach((element) => {
+        const currentMonth = new Date().getMonth()
+        monthArr.forEach((month, id) => {
+            if(id === currentMonth) {
 
         const item = document.createElement('ul')
         item.classList.add('container-weather')
         item.innerHTML = `
-        <li class="item-weather">${city.name}</li>
-        <li class="item-weather">${element.dt_txt}
+        <li class="item-weather main-info">${city.name}</li>
+        <li class="item-weather main-info">${new Date().getDate() + 1} ${month}
         <img src="http://openweathermap.org/img/wn/${element.weather[0]['icon']}@2x.png" 
         alt="${element.weather[0]['description']}">
         </li>
@@ -181,6 +193,8 @@ function getWeatherNextDayFunction (response) {
         `
         container.append(item)
         setTimeout(() => item.classList.add('container-weather-active'),0)
+                }
+            })
         })
 }
 
@@ -223,10 +237,16 @@ function geo () {
 
 }
 function geolocation (lat, lon) {
-    connect(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${_ApiKey}`)
+    connect(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&lang=ru&appid=${_ApiKey}`)
         .then(data => {
             container.innerHTML = ''
             weatherTodayFunction(data)
+
+            //если известна текущая геолокация, то можно посмотреть погоду на завтра
+            nextDay.addEventListener('click', () => {
+                container.innerHTML = ''
+                getWeatherNextDayFunction(data)
+            })
         })
 }
 btnGeolocation.addEventListener('click', geo)
